@@ -8,23 +8,11 @@ public class ArcadeRacerController : MonoBehaviour
     [SerializeField] private float brakeForce = 50f;
     [SerializeField] private float dragFactor = 0.95f;
     [SerializeField] private float turnSpeed = 100f;
-    [SerializeField] private float gripFactor = 0.9f;
-    [SerializeField] private float driftThreshold = 0.8f;
-
-    [Header("Ground Detection")]
-    [SerializeField] private LayerMask groundLayer; // Set this to your ground layer in Inspector
-    [SerializeField] private float groundRayLength = 1f; // Distance to check for ground
-    [SerializeField] private float groundRayHeight = 1f; // Distance to check for ground
-    [SerializeField] private float gravityForce = 20f; // Force of gravity
-    [SerializeField] private float groundedGravityForce = 5f; // Smaller gravity when grounded
-    [SerializeField] private float heightOffset = 0.5f; // Desired height above ground
-    [SerializeField] private float springForce = 50f; // Force to maintain height
-    [SerializeField] private float springDamping = 5f; // Damping for smooth landing
+    [SerializeField] private float changeDirectionFactor = 0.9f;
 
     [Header("Drift Properties")]
     [SerializeField] private float minDriftAngle = 15f;
     [SerializeField] private float maxDriftAngle = 45f;
-    [SerializeField] private float driftRecoveryRate = 2f;
 
     [Header("Boost Properties")]
     [SerializeField] private float boostForce = 50f;
@@ -42,14 +30,12 @@ public class ArcadeRacerController : MonoBehaviour
     private Vector3 moveDirection;
     private Rigidbody rb;
     private bool isGrounded;
-    private RaycastHit groundHit;
     private float verticalVelocity;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = Vector3.down * 0.5f; // Lower center of mass for better stability
-        rb.useGravity = false; // We'll handle gravity manually
     }
 
     private void Update()
@@ -60,51 +46,8 @@ public class ArcadeRacerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        CheckGround();
-        ApplyGravity();
         ApplyMovement();
         ApplyDrift();
-    }
-
-    private void CheckGround()
-    {
-        Transform center = transform;
-        center.position = center.position + Vector3.up * groundRayHeight;
-
-        // Cast a ray downward to detect ground
-        isGrounded = Physics.Raycast(center.position, Vector3.down, out groundHit, groundRayLength, groundLayer);
-        Debug.DrawRay(center.position, Vector3.down * groundRayLength, Color.red, 1f);
-        Debug.Log(isGrounded);
-
-        if (isGrounded)
-        {
-            // Calculate the desired position above ground
-            float targetHeight = groundHit.point.y + heightOffset;
-            float currentHeight = transform.position.y;
-            float heightError = targetHeight - currentHeight;
-
-            // Apply spring force to maintain height
-            float springVelocity = (heightError * springForce) - (rb.velocity.y * springDamping);
-            verticalVelocity = springVelocity;
-
-            // Align with ground normal
-            Quaternion targetRotation = Quaternion.FromToRotation(transform.up, groundHit.normal) * transform.rotation;
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
-        }
-    }
-
-    private void ApplyGravity()
-    {
-        if (!isGrounded)
-        {
-            // Apply stronger gravity when in air
-            verticalVelocity -= gravityForce * Time.fixedDeltaTime;
-        }
-        else
-        {
-            // Apply lighter gravity when grounded to keep the car pressed to the ground
-            verticalVelocity -= groundedGravityForce * Time.fixedDeltaTime;
-        }
     }
 
     private void HandleInput()
@@ -115,44 +58,25 @@ public class ArcadeRacerController : MonoBehaviour
         bool driftInput = Input.GetButton("Jump");
         bool boostInput = Input.GetButton("Fire1");
 
-        // Only allow acceleration when grounded
-        if (isGrounded)
+        if (accelerationInput > 0)
         {
-            if (accelerationInput > 0)
-            {
-                currentSpeed = Mathf.MoveTowards(currentSpeed, maxSpeed, acceleration * Time.deltaTime);
-            }
-            else if (accelerationInput < 0)
-            {
-                currentSpeed = Mathf.MoveTowards(currentSpeed, -maxSpeed * 0.5f, brakeForce * Time.deltaTime);
-            }
-            else
-            {
-                currentSpeed *= dragFactor;
-            }
-
-            // Handle steering
-            float targetTurnAngle = steeringInput * turnSpeed;
-            currentTurnAngle = Mathf.Lerp(currentTurnAngle, targetTurnAngle, Time.deltaTime * 4f);
-
-            // Handle drifting
-            if (driftInput && Mathf.Abs(steeringInput) > driftThreshold && currentSpeed > maxSpeed * 0.5f)
-            {
-                isDrifting = true;
-                driftFactor = Mathf.Lerp(driftFactor, 1f, Time.deltaTime);
-            }
-            else
-            {
-                isDrifting = false;
-                driftFactor = Mathf.Lerp(driftFactor, 0f, Time.deltaTime * driftRecoveryRate);
-            }
+            currentSpeed = Mathf.MoveTowards(currentSpeed, maxSpeed, acceleration * Time.deltaTime);
+        }
+        else if (accelerationInput < 0)
+        {
+            currentSpeed = Mathf.MoveTowards(currentSpeed, -maxSpeed * 0.5f, brakeForce * Time.deltaTime);
         }
         else
         {
-            // Reduce turn control in air
-            float airControlFactor = 0.3f;
-            float targetTurnAngle = steeringInput * turnSpeed * airControlFactor;
-            currentTurnAngle = Mathf.Lerp(currentTurnAngle, targetTurnAngle, Time.deltaTime * 2f);
+            currentSpeed = Mathf.MoveTowards(currentSpeed, 0, dragFactor * Time.deltaTime);
+        }
+
+        // Handle steering
+        if(Mathf.Abs(currentSpeed) >= changeDirectionFactor)
+        {
+            float steerChange = steeringInput * turnSpeed;
+
+            transform.Rotate(0, steerChange, 0);
         }
 
         // Handle boosting
@@ -165,30 +89,19 @@ public class ArcadeRacerController : MonoBehaviour
     private void ApplyMovement()
     {
         // Calculate movement direction
-        moveDirection = transform.forward * currentSpeed;
+        moveDirection = transform.forward;
+        moveDirection.y = 0;
+        moveDirection.Normalize();
+        moveDirection *= currentSpeed;
 
         // Combine horizontal movement with vertical velocity
-        Vector3 finalVelocity = moveDirection + (Vector3.up * verticalVelocity);
+        Vector3 finalVelocity = moveDirection + (Vector3.up * rb.velocity.y);
         rb.velocity = finalVelocity;
-
-        // Apply rotation
-        if (isGrounded)
-        {
-            float turnAmount = currentTurnAngle * Time.fixedDeltaTime;
-            if (isDrifting)
-            {
-                turnAmount *= 1f + driftFactor;
-            }
-            transform.Rotate(0f, turnAmount, 0f);
-
-            // Apply grip
-            Vector3 lateralVelocity = Vector3.Project(rb.velocity, transform.right);
-            rb.velocity -= lateralVelocity * gripFactor * (isDrifting ? (1f - driftFactor) : 1f);
-        }
     }
 
     private void ApplyDrift()
     {
+        return;
         if (isDrifting && isGrounded)
         {
             float driftAngle = Mathf.Lerp(minDriftAngle, maxDriftAngle, driftFactor) * Mathf.Sign(currentTurnAngle);
@@ -200,6 +113,7 @@ public class ArcadeRacerController : MonoBehaviour
 
     private void ActivateBoost()
     {
+        return;
         canBoost = false;
         boostTimer = boostDuration;
         boostCooldownTimer = boostCooldown;
@@ -207,6 +121,7 @@ public class ArcadeRacerController : MonoBehaviour
 
     private void HandleBoosting()
     {
+        return;
         if (boostTimer > 0)
         {
             boostTimer -= Time.deltaTime;
@@ -227,7 +142,6 @@ public class ArcadeRacerController : MonoBehaviour
     {
         // Visualize ground detection ray in Scene view
         Gizmos.color = isGrounded ? Color.green : Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundRayLength);
     }
 
     // Public getters for UI or other systems
