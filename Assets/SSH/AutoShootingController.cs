@@ -109,7 +109,7 @@ namespace SSH
                     Debug.Log($"Hit enemy: {hit.collider.name}");
                 }
 
-                Bullet bullet = Instantiate(bullet, transform.position, Quaternion.identity);
+                // Bullet bullet = Instantiate(bullet, transform.position, Quaternion.identity);
             }
         }
 
