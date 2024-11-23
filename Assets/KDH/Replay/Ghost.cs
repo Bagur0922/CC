@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Ghost : MonoBehaviour
 {
+    public class stats
+    {
+        public float speed;
+        public float dmg;
+        public float hp;
+    }
+
     List<FrameData> replayData = new ();
     bool isReplaying;
 
@@ -11,8 +18,11 @@ public class Ghost : MonoBehaviour
 
     float lerpTime;
 
+    public stats prevStat;
+
     void Start()
     {
+        DontDestroyOnLoad(this);
         ReplayManager.Instance.replayEventHandler.AddListener(StartReplay);
     }
 

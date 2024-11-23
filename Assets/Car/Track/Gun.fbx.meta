@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 66d71e2b1bbeb8f4c88bb386c65c1446
+guid: d84e300e29c0ad34683c2d7bd1bcb676
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -8,42 +8,17 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Black
-    second: {fileID: 2100000, guid: b8c2efa6500266d448c3c533dd073c22, type: 2}
+    second: {fileID: 2100000, guid: c9e28f7062b97c34284d250e6cf84151, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Buildings
-    second: {fileID: 2100000, guid: 7a6026b9057e89740be8f39401439cc4, type: 2}
+      name: Gray
+    second: {fileID: 2100000, guid: 635da4f15e2af3e4aa413b6b93e58520, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Floor
-    second: {fileID: 2100000, guid: a01934a13de082a4a80f7f071f8102f3, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Light
-    second: {fileID: 2100000, guid: c42f0472bbb8a744984f53dd85b73aee, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Road
-    second: {fileID: 2100000, guid: b26452a13e12e674e82ce74244eaf275, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: RoadGlass
-    second: {fileID: 2100000, guid: fd9e712147c977148a2214f507d5c399, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: RoadLight
-    second: {fileID: 2100000, guid: 7da6ea1a32b21c846a45777afe7c931e, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: White
-    second: {fileID: 2100000, guid: 5c1194a14b2f21f4985e23a3db565ea3, type: 2}
+      name: Red
+    second: {fileID: 2100000, guid: 671bb8bc928f04f469e0526ca0a70393, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

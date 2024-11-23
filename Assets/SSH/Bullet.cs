@@ -33,7 +33,6 @@ namespace SSH
 
         private void OnTriggerEnter(Collider other)
         {
-            print("triggetenter");
             if (other.TryGetComponent(out IDamageable target))
             {
                 target.TakeDamage(damage);

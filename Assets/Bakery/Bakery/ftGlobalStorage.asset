@@ -490,7 +490,8 @@ MonoBehaviour:
   - Assets/PROMETEO - Car Controller/Meshes/Prometheus.fbx
   - Assets/PROMETEO - Car Controller/Meshes/Prometheus - Collider.fbx
   - Assets/PROMETEO - Car Controller/Effects/Particle Systems/Meshes/Sphere.fbx
-  uvOverlapAssetList: 00000000ffffffff0101000001010000000000000000000000000000010100000101000001010000ffffffff01010000
+  - Assets/Car/Track/Gun.fbx
+  uvOverlapAssetList: 00000000ffffffff0101000001010000000000000000000000000000010100000101000001010000ffffffff0101000000000000
   xatlasWarningShown: 0
   foundCompatibleSetup: 1
   gpuName: NVIDIA GeForce RTX 4060 Laptop GPU

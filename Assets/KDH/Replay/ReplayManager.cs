@@ -3,20 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ReplayManager : MonoBehaviour
+public class ReplayManager : SingleTon<ReplayManager>
 {
-    static public ReplayManager Instance;
     public List<List<FrameData>> replayDatas = new();
     public UnityEvent replayEventHandler = new();
     public float frameInterval;
-
-    void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-    }
 
     public void StartReplay()
     {

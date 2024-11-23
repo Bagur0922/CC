@@ -40,8 +40,11 @@ public class ArcadeRacerController : MonoBehaviour
     private Rigidbody rb;
     private bool isGrounded;
 
+    public float dmg = 10;
+
     private void Start()
     {
+        GameManager.Instance.controller = this;
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = Vector3.down * 0.5f; // Lower center of mass for better stability
     }
@@ -172,6 +175,8 @@ public class ArcadeRacerController : MonoBehaviour
         Gizmos.color = isGrounded ? Color.green : Color.red;
         Gizmos.DrawLine(center, center + Vector3.down * groundCheckLength);
     }
+
+
 
     // Public getters for UI or other systems
     public float GetSpeed() => currentSpeed;

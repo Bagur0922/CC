@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.TextCore.Text;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 namespace SSH
 {
@@ -14,8 +15,8 @@ namespace SSH
         [Header("Detection Settings")] [SerializeField]
         private float detectionRange = 10f;
 
-        [SerializeField] private float detectionAngle = 90f;
         [SerializeField] private LayerMask enemyLayer;
+        [SerializeField] private LayerMask playerLayer;
         [SerializeField] private float shootingCooldown = 1f;
         [SerializeField] private int maxDetectableEnemies = 10; // 최대 감지 가능한 적 수
 
@@ -31,17 +32,26 @@ namespace SSH
         private Transform currentTarget;
         private Collider[] hitColliders; // 재사용할 배열
 
+        Stats stat;
+
         private void Start()
         {
             // 시작시 배열 한번만 생성
             hitColliders = new Collider[maxDetectableEnemies];
+            if(GetComponentInParent<Ghost>() != null)
+            {
+                stat = GetComponentInParent<Ghost>().prevStat;
+            }
         }
 
         private void Update()
         {
             DetectAndShoot();
         }
-
+        public void switchTarget()
+        {
+            enemyLayer = playerLayer;
+        }
         private void DetectAndShoot()
         {
             // NonAlloc 버전 사용 - 결과 수를 반환
@@ -52,6 +62,11 @@ namespace SSH
                 enemyLayer
             );
 
+            if (currentTarget != null)
+            {
+                transform.LookAt(currentTarget);
+            }
+
             float closestDistance = float.MaxValue;
             Transform closestEnemy = null;
 
@@ -60,23 +75,11 @@ namespace SSH
             {
                 if (hitColliders[i] == null) continue;
 
-                Vector3 directionToTarget = (hitColliders[i].transform.position - transform.position).normalized;
-                float angleToTarget = Vector3.Angle(transform.forward, directionToTarget);
-
-                if (angleToTarget <= detectionAngle * 0.5f)
+                float distance = Vector3.Distance(transform.position, hitColliders[i].transform.position);
+                if (distance < closestDistance)
                 {
-                    if (!Physics.Raycast(transform.position, directionToTarget, out RaycastHit hit, detectionRange))
-                        continue;
-
-                    if (hit.collider != hitColliders[i])
-                        continue;
-
-                    float distance = Vector3.Distance(transform.position, hitColliders[i].transform.position);
-                    if (distance < closestDistance)
-                    {
-                        closestDistance = distance;
-                        closestEnemy = hitColliders[i].transform;
-                    }
+                    closestDistance = distance;
+                    closestEnemy = hitColliders[i].transform;
                 }
             }
 
@@ -84,8 +87,7 @@ namespace SSH
 
             if (currentTarget != null && canShoot)
             {
-                Vector3 targetDirection = (currentTarget.position - transform.position).normalized;
-                transform.forward = Vector3.Lerp(transform.forward, targetDirection, Time.deltaTime * 5f);
+                transform.LookAt(currentTarget);
 
                 Shoot();
                 StartCoroutine(ShootingCooldown());
@@ -107,7 +109,7 @@ namespace SSH
                 if (target != null)
                 {
                     Debug.Log($"Found enemy: {hit.collider.name}");
-                    Bullet bullet = Instantiate(_bulletObject, transform.position + Vector3.up * 5, Quaternion.identity)
+                    Bullet bullet = Instantiate(_bulletObject, firePoint.position, Quaternion.identity)
                         .GetComponent<Bullet>();
                     bullet.SetTarget(hit.transform);
                     bullet.SetDamage(damage);
@@ -131,14 +133,6 @@ namespace SSH
             // 감지 범위 표시
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, detectionRange);
-
-            // 감지 각도 표시
-            Vector3 rightDir = Quaternion.Euler(0, detectionAngle * 0.5f, 0) * transform.forward;
-            Vector3 leftDir = Quaternion.Euler(0, -detectionAngle * 0.5f, 0) * transform.forward;
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawRay(transform.position, rightDir * detectionRange);
-            Gizmos.DrawRay(transform.position, leftDir * detectionRange);
 
             // 현재 타겟 표시
             if (currentTarget != null)
