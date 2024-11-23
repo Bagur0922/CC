@@ -21,10 +21,11 @@ namespace SSH
 
         [Header("Shooting Settings")] [SerializeField]
         private float damage = 10f;
+        private float speed = 200f;
 
         [SerializeField] private Transform firePoint;
         [SerializeField] private ParticleSystem muzzleFlash;
-        [SerializeField] private GameObject bullet;
+        [SerializeField] private GameObject _bulletObject;
 
         private bool canShoot = true;
         private Transform currentTarget;
@@ -38,8 +39,7 @@ namespace SSH
 
         private void Update()
         {
-            if (canShoot)
-                DetectAndShoot();
+            DetectAndShoot();
         }
 
         private void DetectAndShoot()
@@ -102,14 +102,18 @@ namespace SSH
 
             if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, detectionRange, enemyLayer))
             {
+                print("shooting");
                 IDamageable target = hit.collider.GetComponent<IDamageable>();
                 if (target != null)
                 {
-                    target.TakeDamage(damage);
-                    Debug.Log($"Hit enemy: {hit.collider.name}");
+                    Debug.Log($"Found enemy: {hit.collider.name}");
+                    Bullet bullet = Instantiate(_bulletObject, transform.position + Vector3.up * 5, Quaternion.identity)
+                        .GetComponent<Bullet>();
+                    bullet.SetTarget(hit.transform);
+                    bullet.SetDamage(damage);
+                    bullet.SetSpeed(speed);
                 }
 
-                Bullet bullet = Instantiate(bullet, transform.position, Quaternion.identity);
             }
         }
 
