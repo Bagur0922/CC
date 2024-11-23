@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(PlayerReplay))]
-public class PlayerReplayEditor : Editor
+[CustomEditor(typeof(PlayerReplayRecorder))]
+// 레코더의 에디터 녹화 시작과 종료를 위한 버튼 생성
+public class PlayerReplayRecorderEditor : Editor
 {
-    PlayerReplay playerReplay;
+    PlayerReplayRecorder playerReplay;
 
     void OnEnable()
     {
-        playerReplay = (PlayerReplay)target;
+        playerReplay = (PlayerReplayRecorder)target;
     }
 
     public override void OnInspectorGUI()

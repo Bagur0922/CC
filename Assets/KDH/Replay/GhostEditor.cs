@@ -18,9 +18,6 @@ public class GhostEditor : Editor
         base.OnInspectorGUI();
 
         if (GUILayout.Button("리플레이 시작"))
-        {
-            ghost.Initialize(ReplayManager.Instance.replayDatas[0]);
             ghost.StartReplay();
-        }
     }
 }

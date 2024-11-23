@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerReplay : MonoBehaviour
+public class PlayerReplayRecorder : MonoBehaviour
 {
     [SerializeField] bool isRecording;
     [SerializeField] List<FrameData> replayData;
@@ -29,9 +29,12 @@ public class PlayerReplay : MonoBehaviour
         replayData = new();
     }
 
+    // 레코딩 종료(경기 종료)시 고스트 생성 및 초기화
     public void EndRecording()
     {
         isRecording = false;
-        ReplayManager.Instance.replayDatas.Add(replayData);
+        gameObject.AddComponent<Ghost>();
+        Ghost ghost = GetComponent<Ghost>();
+        ghost.Initialize(replayData);
     }
 }
