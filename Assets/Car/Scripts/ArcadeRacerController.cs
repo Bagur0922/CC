@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ArcadeRacerController : MonoBehaviour
@@ -9,6 +10,8 @@ public class ArcadeRacerController : MonoBehaviour
     [SerializeField] private float dragFactor = 0.95f;
     [SerializeField] private float turnSpeed = 100f;
     [SerializeField] private float changeDirectionFactor = 0.9f;
+    [SerializeField] private float dirFactor = 0.9f;
+    [SerializeField] private float gravityFactor = 1.5f;
 
     [Header("Drift Properties")]
     [SerializeField] private float minDriftAngle = 15f;
@@ -18,6 +21,12 @@ public class ArcadeRacerController : MonoBehaviour
     [SerializeField] private float boostForce = 50f;
     [SerializeField] private float boostDuration = 2f;
     [SerializeField] private float boostCooldown = 5f;
+
+    [Header("GroundCheck")]
+    [SerializeField] private float groundCheckLength;
+    [SerializeField] private float groundCheckHeight;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private RaycastHit groundHit;
 
     // Private variables for car state
     private float currentSpeed;
@@ -30,7 +39,6 @@ public class ArcadeRacerController : MonoBehaviour
     private Vector3 moveDirection;
     private Rigidbody rb;
     private bool isGrounded;
-    private float verticalVelocity;
 
     private void Start()
     {
@@ -40,6 +48,7 @@ public class ArcadeRacerController : MonoBehaviour
 
     private void Update()
     {
+        GroundCheck();
         HandleInput();
         HandleBoosting();
     }
@@ -49,7 +58,16 @@ public class ArcadeRacerController : MonoBehaviour
         ApplyMovement();
         ApplyDrift();
     }
+    private void GroundCheck()
+    {
+        Vector3 center = transform.position;
+        center = transform.position + Vector3.up * groundCheckHeight;
 
+        isGrounded = Physics.Raycast(center, Vector3.down, out groundHit, groundCheckLength, groundLayer);
+
+        Debug.Log(isGrounded);
+
+    }
     private void HandleInput()
     {
         // Get input values
@@ -94,8 +112,15 @@ public class ArcadeRacerController : MonoBehaviour
         moveDirection.Normalize();
         moveDirection *= currentSpeed;
 
+        if (!isGrounded)
+        {
+            Quaternion targetRotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * dirFactor);
+
+        }
+
         // Combine horizontal movement with vertical velocity
-        Vector3 finalVelocity = moveDirection + (Vector3.up * rb.velocity.y);
+        Vector3 finalVelocity = moveDirection + (Vector3.up * (isGrounded ? rb.velocity.y : -gravityFactor * Mathf.Abs(rb.velocity.y)));
         rb.velocity = finalVelocity;
     }
 
@@ -140,8 +165,12 @@ public class ArcadeRacerController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        Vector3 center = transform.position;
+        center = transform.position + Vector3.up * groundCheckHeight;
+
         // Visualize ground detection ray in Scene view
         Gizmos.color = isGrounded ? Color.green : Color.red;
+        Gizmos.DrawLine(center, center + Vector3.down * groundCheckLength);
     }
 
     // Public getters for UI or other systems
