@@ -114,7 +114,7 @@ namespace SSH
                     bullet.SetSpeed(speed);
                 }
 
-                Bullet bullet = Instantiate(bullet, transform.position, Quaternion.identity);
+
             }
         }
 
