@@ -35,9 +35,12 @@ public class GameManager : SingleTon<GameManager>
     public int upgradeDmg;
     public int upgradeHp;
 
+    AniSoundPlayer sp;
+
 
     public void Start()
     {
+        sp = GetComponent<AniSoundPlayer>();
         gameStart();
         if(controller != null) {
             cmvc.Follow = controller.transform;
@@ -81,7 +84,7 @@ public class GameManager : SingleTon<GameManager>
 
         countDown = 3;
 
-
+        sp.playSFXwithString("Ready");
         countDownSprite.gameObject.GetComponent<RectTransform>().sizeDelta = sizes[countDown];
         countDownSprite.gameObject.SetActive(true);
         countDownSprite.sprite = countDownImages[countDown];
@@ -107,7 +110,7 @@ public class GameManager : SingleTon<GameManager>
                 i.GetComponent<Ghost>().StartReplay();
             }
 
-
+            sp.playBGMwithString("BGM");
             currentTime = 0;
 
             return;
@@ -129,7 +132,7 @@ public class GameManager : SingleTon<GameManager>
         if(currentTime > latestTime)
         {
             //게임 오버
-
+            sp.playSFXwithString("GameOver");
             SceneManager.LoadScene("gameOver");
         }
         else
