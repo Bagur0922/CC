@@ -586,10 +586,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   detectionRange: 24.74
-  detectionAngle: 90
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 256
   shootingCooldown: 1
   maxDetectableEnemies: 10
   damage: 10
@@ -723,9 +725,12 @@ GameObject:
   - component: {fileID: 572746989029364377}
   - component: {fileID: 7618666910083142584}
   - component: {fileID: 7212166585941017741}
+  - component: {fileID: 4313682548498267626}
+  - component: {fileID: 1806025252360441576}
+  - component: {fileID: 2838272071364795714}
   m_Layer: 0
   m_Name: Prometheus (1)
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -738,8 +743,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8236938988984643079}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.15756807, w: 0.9875081}
-  m_LocalPosition: {x: 230.13542, y: -1.0586975, z: -221.71}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 230.13542, y: 0.07, z: -221.71}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -750,7 +755,7 @@ Transform:
   - {fileID: 6908211599498749496}
   - {fileID: -8679921383154817045}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 18.132}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &572746989029364377
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -797,7 +802,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.2000003, y: 0.5066678, z: 1.32}
+  m_Size: {x: 2.2000003, y: 0.5066678, z: 5.54}
   m_Center: {x: 0, y: 0.2505482, z: 0}
 --- !u!114 &7212166585941017741
 MonoBehaviour:
@@ -829,6 +834,62 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
+  dmg: 10
+  mrs:
+  - {fileID: 6711156105747391600}
+  - {fileID: 7213653230312156162}
+  - {fileID: 3428839461329243326}
+  - {fileID: 5307928578363320996}
+  - {fileID: 4197887064858822200}
+  - {fileID: 8442510506162454399}
+  smrs:
+  - {fileID: -3642248809546156846}
+  - {fileID: 8417361359673230750}
+  hologram: {fileID: 2100000, guid: 247ee21129129684baf807482411f261, type: 2}
+--- !u!114 &4313682548498267626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8236938988984643079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d97eefd1cca9e174dba314e0a7dc822a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isRecording: 0
+  replayData: []
+--- !u!114 &1806025252360441576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8236938988984643079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b42ec6a16313a2f43aee144e9e07a535, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2838272071364795714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8236938988984643079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cdd573b26580404ba1ec447bf9df334, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heightOffset: 4
+  isPlayer: 1
+  hp: 0
+  maxHp: 100
+  hpBar: {fileID: 1926954142274309412, guid: 40fa9b4ce206bad4d96eb5dd06e3336f, type: 3}
+  enemyBar: {fileID: 21300000, guid: fced5dde127265148a6c325c7c316c41, type: 3}
 --- !u!1 &8529816276027635518
 GameObject:
   m_ObjectHideFlags: 0

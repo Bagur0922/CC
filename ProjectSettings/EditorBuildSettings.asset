@@ -4,5 +4,17 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Car/Scenes/Track.unity
+    guid: 5235dbe7ddb887f4b9997c22e2d413e5
+  - enabled: 1
+    path: Assets/Car/Scenes/TitleMenu.unity
+    guid: a0ba6da1a3a374149bcb0aa92621e948
+  - enabled: 1
+    path: Assets/Car/Scenes/UpgradeScene.unity
+    guid: c06d3a1e925b312478c6a2d6a3100160
+  - enabled: 1
+    path: Assets/Car/Scenes/gameOver.unity
+    guid: b2116b49e50a1b24aaca92ac3e663f8d
   m_configObjects: {}

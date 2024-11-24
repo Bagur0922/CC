@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(PlayerReplay))]
-public class PlayerReplayEditor : Editor
+public class PlayerReplayEditor : UnityEditor.Editor
 {
     PlayerReplay playerReplay;
 
@@ -18,7 +17,7 @@ public class PlayerReplayEditor : Editor
         base.OnInspectorGUI();
 
         if (GUILayout.Button("≥Ï»≠ Ω√¿€"))
-            playerReplay.StartRecording();
+            playerReplay.StartRecording(GameManager.Instance.day);
         if (GUILayout.Button("≥Ï»≠ ¡æ∑·"))
             playerReplay.EndRecording();
     }

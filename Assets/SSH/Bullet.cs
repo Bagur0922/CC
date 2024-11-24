@@ -33,9 +33,10 @@ namespace SSH
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent(out IDamageable target))
+            Debug.Log("»ç¶óÁü");
+            if (other.GetComponent<Enemy>() != null && target == other.transform)
             {
-                target.TakeDamage(damage);
+                target.GetComponent<Enemy>().TakeDamage(damage);
                 Destroy(gameObject);
             }
         }

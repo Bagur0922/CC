@@ -32,16 +32,16 @@ namespace SSH
         private Transform currentTarget;
         private Collider[] hitColliders; // 재사용할 배열
 
-        Stats stat;
+        public Stats stat;
+
+        bool attackPlayer = false;
 
         private void Start()
         {
             // 시작시 배열 한번만 생성
             hitColliders = new Collider[maxDetectableEnemies];
-            if(GetComponentInParent<Ghost>() != null)
-            {
-                stat = GetComponentInParent<Ghost>().prevStat;
-            }
+            canShoot = true;
+
         }
 
         private void Update()
@@ -51,6 +51,7 @@ namespace SSH
         public void switchTarget()
         {
             enemyLayer = playerLayer;
+            attackPlayer = true;
         }
         private void DetectAndShoot()
         {
@@ -97,17 +98,19 @@ namespace SSH
         private void Shoot()
         {
             if (muzzleFlash != null)
-                muzzleFlash.Play();
+                muzzleFlash.Play(); 
 
             Vector3 rayOrigin = firePoint != null ? firePoint.position : transform.position;
             Vector3 rayDirection = (currentTarget.position - rayOrigin).normalized;
 
             if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, detectionRange, enemyLayer))
             {
-                print("shooting");
-                IDamageable target = hit.collider.GetComponent<IDamageable>();
+                
+                Transform target = hit.collider.transform;
                 if (target != null)
                 {
+                    print("shooting");
+
                     Debug.Log($"Found enemy: {hit.collider.name}");
                     Bullet bullet = Instantiate(_bulletObject, firePoint.position, Quaternion.identity)
                         .GetComponent<Bullet>();

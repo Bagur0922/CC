@@ -4,11 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-namespace SSH
-{ 
-    public class Enemy : MonoBehaviour, IDamageable
+    public class Enemy : MonoBehaviour
     {
         [SerializeField] float heightOffset;
+    public bool isPlayer = true;
         public float hp;
         public float maxHp;
 
@@ -37,6 +36,8 @@ namespace SSH
         // Update is called once per frame
         void Update()
         {
+        if (!GameManager.Instance.racing) bar.SetActive(false);
+        else bar.SetActive(true);
             usingBar.fillAmount = hp / maxHp;
         }
 
@@ -45,4 +46,4 @@ namespace SSH
             hp -= damage;
         }
     }
-}
+

@@ -1,4 +1,6 @@
+using SSH;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class ArcadeRacerController : MonoBehaviour
@@ -42,24 +44,37 @@ public class ArcadeRacerController : MonoBehaviour
 
     public float dmg = 10;
 
+    PlayerReplay pr;
+    Ghost gt;
+    AutoShootingController asc;
+    Enemy ey;
+
+    [SerializeField] MeshRenderer[] mrs;
+    [SerializeField] SkinnedMeshRenderer[] smrs;
+    [SerializeField] Material hologram;
+
     private void Start()
     {
         GameManager.Instance.controller = this;
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = Vector3.down * 0.5f; // Lower center of mass for better stability
+        pr = GetComponent<PlayerReplay>();
+        gt = GetComponent<Ghost>();
+        asc = GetComponentInChildren<AutoShootingController>();
+        ey = GetComponent<Enemy>();
     }
 
     private void Update()
     {
         GroundCheck();
         HandleInput();
-        HandleBoosting();
+        //HandleBoosting();
     }
 
     private void FixedUpdate()
     {
         ApplyMovement();
-        ApplyDrift();
+        //ApplyDrift();
     }
     private void GroundCheck()
     {
@@ -73,6 +88,7 @@ public class ArcadeRacerController : MonoBehaviour
     }
     private void HandleInput()
     {
+        if (GameManager.Instance.racing == false) return;
         // Get input values
         float accelerationInput = Input.GetAxis("Vertical");
         float steeringInput = Input.GetAxis("Horizontal");
@@ -94,7 +110,7 @@ public class ArcadeRacerController : MonoBehaviour
 
         // Handle steering
         if(Mathf.Abs(currentSpeed) >= changeDirectionFactor)
-        {
+        { 
             float steerChange = steeringInput * turnSpeed;
 
             transform.Rotate(0, steerChange, 0);
@@ -103,7 +119,7 @@ public class ArcadeRacerController : MonoBehaviour
         // Handle boosting
         if (boostInput && canBoost && isGrounded)
         {
-            ActivateBoost();
+            //ActivateBoost();
         }
     }
 
@@ -126,10 +142,43 @@ public class ArcadeRacerController : MonoBehaviour
         Vector3 finalVelocity = moveDirection + (Vector3.up * (isGrounded ? rb.velocity.y : -gravityFactor * Mathf.Abs(rb.velocity.y)));
         rb.velocity = finalVelocity;
     }
-
-    private void ApplyDrift()
+    public void gameStart()
     {
-        return;
+        pr.StartRecording(GameManager.Instance.day);
+        gt.enabled = false;
+    }
+    public void gameEnd()
+    {
+        pr.EndRecording();
+        asc.switchTarget();
+        ey.switchEnemy();
+        gt.enabled = true;
+        gameObject.GetComponent<BoxCollider>().enabled = false;
+        gameObject.GetComponent<Rigidbody>().isKinematic = true;
+
+        foreach (MeshRenderer s in mrs)
+        {
+            Material[] newMaterials = s.materials;
+            for (int i = 0; i < s.materials.Length; i++)
+            {
+                newMaterials[i] = hologram;
+            }
+            s.materials = newMaterials;
+        }
+        foreach (SkinnedMeshRenderer s in smrs)
+        {
+            Material[] newMaterials = s.materials;
+            for (int i = 0; i < s.materials.Length; i++)
+            {
+                newMaterials[i] = hologram;
+            }
+            s.materials = newMaterials;
+        }
+
+        Destroy(this);
+    }
+    /*private void ApplyDrift()
+    {
         if (isDrifting && isGrounded)
         {
             float driftAngle = Mathf.Lerp(minDriftAngle, maxDriftAngle, driftFactor) * Mathf.Sign(currentTurnAngle);
@@ -137,17 +186,17 @@ public class ArcadeRacerController : MonoBehaviour
             newRotation.y += driftAngle;
             // carModel.rotation = Quaternion.Euler(newRotation);
         }
-    }
+    }*/
 
-    private void ActivateBoost()
+    /*private void ActivateBoost()
     {
         return;
         canBoost = false;
         boostTimer = boostDuration;
         boostCooldownTimer = boostCooldown;
-    }
+    }*/
 
-    private void HandleBoosting()
+    /*private void HandleBoosting()
     {
         return;
         if (boostTimer > 0)
@@ -164,7 +213,7 @@ public class ArcadeRacerController : MonoBehaviour
                 canBoost = true;
             }
         }
-    }
+    }*/
 
     private void OnDrawGizmosSelected()
     {

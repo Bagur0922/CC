@@ -4,26 +4,16 @@ using UnityEngine;
 
 public class Ghost : MonoBehaviour
 {
-    public class stats
-    {
-        public float speed;
-        public float dmg;
-        public float hp;
-    }
-
-    List<FrameData> replayData = new ();
+    List<FrameData> replayData = new();
     bool isReplaying;
 
     int currentFrame;
-
     float lerpTime;
-
-    public stats prevStat;
 
     void Start()
     {
         DontDestroyOnLoad(this);
-        ReplayManager.Instance.replayEventHandler.AddListener(StartReplay);
+        ReplayManager.Instance.replayEventHandler.AddListener(InitializeAndStartReplay);
     }
 
     void Update()
@@ -55,17 +45,31 @@ public class Ghost : MonoBehaviour
 
     public void Initialize(List<FrameData> replayData)
     {
-        this.replayData = replayData;
+        this.replayData = replayData; // 전달받은 리플레이 데이터를 설정
     }
 
     public void StartReplay()
     {
-        currentFrame = 1;
+        currentFrame = 0;
         isReplaying = true;
+        lerpTime = 0;
     }
 
     public void StopReplay()
     {
         isReplaying = false;
+    }
+
+    private void InitializeAndStartReplay(int index)
+    {
+        if (index >= 0 && index < ReplayManager.Instance.replayDatas.Count)
+        {
+            replayData = ReplayManager.Instance.replayDatas[index];
+            StartReplay();
+        }
+        else
+        {
+            Debug.LogError("Invalid replay index or data is null!");
+        }
     }
 }
