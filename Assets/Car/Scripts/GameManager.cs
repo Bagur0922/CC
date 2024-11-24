@@ -53,6 +53,7 @@ public class GameManager : SingleTon<GameManager>
         if (racing)
         {
             currentTime += Time.deltaTime;
+            timer.text = currentTime.ToString();
         }
     }
     public void gameStart()
@@ -63,7 +64,7 @@ public class GameManager : SingleTon<GameManager>
         endLineCollider.gameObject.GetComponent<BoxCollider>().enabled = false;
 
         countDown = 3;
-
+        AudioManager.Instance.PlaySFX("Start");
 
         countDownSprite.gameObject.GetComponent<RectTransform>().sizeDelta = sizes[countDown];
         countDownSprite.gameObject.SetActive(true);
@@ -84,7 +85,6 @@ public class GameManager : SingleTon<GameManager>
 
         countDown = 3;
 
-        SoundPlayer.instance.startSFX("Ready");
         countDownSprite.gameObject.GetComponent<RectTransform>().sizeDelta = sizes[countDown];
         countDownSprite.gameObject.SetActive(true);
         countDownSprite.sprite = countDownImages[countDown];
@@ -110,7 +110,7 @@ public class GameManager : SingleTon<GameManager>
                 i.GetComponent<Ghost>().StartReplay();
             }
 
-            SoundPlayer.instance.startBGM("BGM");
+            AudioManager.Instance.PlayBGM("BGM");
             currentTime = 0;
 
             return;
@@ -125,6 +125,7 @@ public class GameManager : SingleTon<GameManager>
     {
         ghosts.Add(GameManager.Instance.controller.gameObject);
 
+        timer.enabled = false;
         day++;
         controller.gameEnd();
         racing = false;
@@ -132,7 +133,7 @@ public class GameManager : SingleTon<GameManager>
         if(currentTime > latestTime)
         {
             //게임 오버
-            SoundPlayer.instance.startSFX("GameOver");
+            AudioManager.Instance.PlaySFX("Over");
             SceneManager.LoadScene("gameOver");
         }
         else
@@ -140,6 +141,7 @@ public class GameManager : SingleTon<GameManager>
             //다음 스테이지
 
             SceneManager.LoadScene("UpgradeScene");
+            coin += day * 15;
         }
 
         latestTime = currentTime;

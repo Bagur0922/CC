@@ -1,4 +1,5 @@
 using SSH;
+using System.Globalization;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -55,6 +56,8 @@ public class ArcadeRacerController : MonoBehaviour
 
     private void Start()
     {
+        maxSpeed += GameManager.Instance.day;
+        acceleration += GameManager.Instance.day;
         GameManager.Instance.controller = this;
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = Vector3.down * 0.5f; // Lower center of mass for better stability
@@ -152,8 +155,9 @@ public class ArcadeRacerController : MonoBehaviour
         pr.EndRecording();
         asc.switchTarget();
         ey.switchEnemy();
+        this.gameObject.layer = 6;
         gt.enabled = true;
-        gameObject.GetComponent<BoxCollider>().enabled = false;
+        gameObject.GetComponent<BoxCollider>().isTrigger = true;
         gameObject.GetComponent<Rigidbody>().isKinematic = true;
 
         foreach (MeshRenderer s in mrs)

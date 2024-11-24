@@ -26,6 +26,23 @@ public class Upgrade : MonoBehaviour
             }
         }
     }
+    void gang()
+    {
+        if (isDmg)
+        {
+            for (int i = 0; i < GameManager.Instance.upgradeDmg; i++)
+            {
+                upgradeLevels[i].SetActive(true);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < GameManager.Instance.upgradeHp; i++)
+            {
+                upgradeLevels[i].SetActive(true);
+            }
+        }
+    }
     public void Pressed()
     {
         if (isDmg)
@@ -34,6 +51,7 @@ public class Upgrade : MonoBehaviour
             {
                 GameManager.Instance.coin -= upgradeCost[GameManager.Instance.upgradeDmg];
                 GameManager.Instance.upgradeDmg += 1;
+                gang();
             }
         }
         else
@@ -42,6 +60,7 @@ public class Upgrade : MonoBehaviour
             {
                 GameManager.Instance.coin -= upgradeCost[GameManager.Instance.upgradeHp];
                 GameManager.Instance.upgradeHp += 1;
+                gang();
             }
         }
         

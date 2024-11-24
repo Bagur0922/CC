@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
     public class Enemy : MonoBehaviour
     {
+    [SerializeField] GameObject Explosion;
+
         [SerializeField] float heightOffset;
     public bool isPlayer = true;
         public float hp;
@@ -21,6 +23,7 @@ using UnityEngine.UI;
         // Start is called before the first frame update
         void Start()
         {
+        maxHp += GameManager.Instance.upgradeHp * 5;
             hp = maxHp;
 
             Vector3 pos = transform.position + Vector3.up * heightOffset;
@@ -44,6 +47,15 @@ using UnityEngine.UI;
         public void TakeDamage(float damage)
         {
             hp -= damage;
+
+        if(hp <= 0)
+        {
+            GameObject ex = Instantiate(Explosion);
+            ex.transform.position = transform.position;
+            ex.SetActive(true);
+            AudioManager.Instance.PlaySFX("Boom");
+            gameObject.SetActive(false);
+        }
         }
     }
 

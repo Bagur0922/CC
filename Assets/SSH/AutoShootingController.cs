@@ -38,6 +38,8 @@ namespace SSH
 
         private void Start()
         {
+            damage += GameManager.Instance.upgradeDmg * 5;
+            
             // 시작시 배열 한번만 생성
             hitColliders = new Collider[maxDetectableEnemies];
             canShoot = true;
@@ -98,7 +100,9 @@ namespace SSH
         private void Shoot()
         {
             if (muzzleFlash != null)
-                muzzleFlash.Play(); 
+                muzzleFlash.Play();
+
+            AudioManager.Instance.PlaySFX("Bang");
 
             Vector3 rayOrigin = firePoint != null ? firePoint.position : transform.position;
             Vector3 rayDirection = (currentTarget.position - rayOrigin).normalized;
