@@ -53,6 +53,14 @@ public class SoundPlayer : MonoBehaviour
            return _instance;
         }
     }
+
+    public enum eOptionType
+    {
+        Master, // 마스터 볼륨
+        BGM,    // 배경음악 볼륨
+        SFX     // 효과음 볼륨
+    }
+
     // Start is called before the first frame update
     void Awake()
     {
