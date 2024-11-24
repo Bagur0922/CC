@@ -2513,8 +2513,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   masterMixer: {fileID: 0}
-  bgms: []
-  sfxs: []
+  bgms:
+  - name: BGM
+    audios:
+    - {fileID: 8300000, guid: 8a53dca5d9fd2d641b8a2d86295dab92, type: 3}
+  sfxs:
+  - name: Ready
+    audios:
+    - {fileID: 8300000, guid: d8e91f1b39d2fa64ebc8266eb0277951, type: 3}
+  - name: GameOver
+    audios:
+    - {fileID: 8300000, guid: 8ca14adc95ee5ea479afc3314cf6676a, type: 3}
   bgmSource: {fileID: 1365571070}
   sfxSource: {fileID: 1048889918}
   BGMvolume: 0
