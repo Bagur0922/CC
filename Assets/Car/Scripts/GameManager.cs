@@ -84,7 +84,7 @@ public class GameManager : SingleTon<GameManager>
 
         countDown = 3;
 
-        sp.playSFXwithString("Ready");
+        SoundPlayer.instance.startSFX("Ready");
         countDownSprite.gameObject.GetComponent<RectTransform>().sizeDelta = sizes[countDown];
         countDownSprite.gameObject.SetActive(true);
         countDownSprite.sprite = countDownImages[countDown];
@@ -110,7 +110,7 @@ public class GameManager : SingleTon<GameManager>
                 i.GetComponent<Ghost>().StartReplay();
             }
 
-            sp.playBGMwithString("BGM");
+            SoundPlayer.instance.startBGM("BGM");
             currentTime = 0;
 
             return;
@@ -132,7 +132,7 @@ public class GameManager : SingleTon<GameManager>
         if(currentTime > latestTime)
         {
             //게임 오버
-            sp.playSFXwithString("GameOver");
+            SoundPlayer.instance.startSFX("GameOver");
             SceneManager.LoadScene("gameOver");
         }
         else
